@@ -1,28 +1,26 @@
 import numpy as np
 import random
-
-# actionSpace = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
-actionSpace = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+from environment import Maze
 
 
 class Agent:
 
-    def __init__(self, states, alpha=0.15, explore=0.2):
+    def __init__(self, alpha=0.15, explore=0.2):
         self.stateHistory = [((0, 0), 0)]
         self.alpha = alpha
         self.explore = explore
-        self.G = {state: np.random.uniform(low=-1.0, high=-0.1) for state in states}
+        self.G = {state: np.random.uniform(low=-1.0, high=-0.1) for state in Maze.getStateSpace()}
 
-    def chooseAction(self, state, allowedMoves):
+    def chooseAction(self, state, allowedActions):
 
         nextMove = None
 
         chance = np.random.random()
         if chance < self.explore:
-            nextMove = random.choice(allowedMoves)
+            nextMove = random.choice(allowedActions)
         else:
             maxG = -10e15
-            for action in allowedMoves:
+            for action in allowedActions:
                 newState = tuple(sum(x) for x in zip(state, action))
                 if self.G[newState] >= maxG:
                     nextMove = action
